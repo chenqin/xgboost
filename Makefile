@@ -7,7 +7,7 @@ endif
 endif
 
 ifndef DMLC_CORE
-	DMLC_CORE = dmlc-core
+	DMLC_CORE = rabit/dmlc-core
 endif
 
 ifndef RABIT
@@ -173,10 +173,10 @@ xgboost: $(CLI_OBJ) $(ALL_DEP)
 	$(CXX) $(CFLAGS) -o $@  $(filter %.o %.a, $^)  $(LDFLAGS)
 
 rcpplint:
-	python2 dmlc-core/scripts/lint.py xgboost ${LINT_LANG} R-package/src
+	python2 rabit/dmlc-core/scripts/lint.py xgboost ${LINT_LANG} R-package/src
 
 lint: rcpplint
-	python2 dmlc-core/scripts/lint.py xgboost ${LINT_LANG} include src plugin python-package
+	python2 rabit/dmlc-core/scripts/lint.py xgboost ${LINT_LANG} include src plugin python-package
 
 pylint:
 	flake8 --ignore E501 python-package
