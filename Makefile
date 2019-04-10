@@ -255,8 +255,8 @@ Rpack: clean_all
 	cp -r rabit/src xgboost/src/rabit/src
 	rm -rf xgboost/src/rabit/src/*.o
 	mkdir -p xgboost/src/dmlc-core
-	cp -r dmlc-core/include xgboost/src/dmlc-core/include
-	cp -r dmlc-core/src xgboost/src/dmlc-core/src
+	cp -r rabit/dmlc-core/include xgboost/src/dmlc-core/include
+	cp -r rabit/dmlc-core/src xgboost/src/dmlc-core/src
 	cp ./LICENSE xgboost
 	cat R-package/src/Makevars.in|sed '2s/.*/PKGROOT=./' | sed '3s/.*/ENABLE_STD_THREAD=0/' > xgboost/src/Makevars.in
 	cp xgboost/src/Makevars.in xgboost/src/Makevars.win
