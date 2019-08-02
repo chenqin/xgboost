@@ -191,7 +191,12 @@ class XGBoostClassifier (
           weight, baseMargin, None, dataFrame).head)
     }
     transformSchema(dataset.schema, logging = true)
-    val derivedXGBParamMap = MLlib2XGBoostParams
+    var derivedXGBParamMap = MLlib2XGBoostParams
+    for ( (k, v) <- xgboostParams) {
+      if (k.startsWith("rabit_")) {
+        derivedXGBParamMap = derivedXGBParamMap + (k -> v.asInstanceOf[String])
+      }
+    }
     // All non-null param maps in XGBoostClassifier are in derivedXGBParamMap.
     val (_booster, _metrics) = XGBoost.trainDistributed(trainingSet, derivedXGBParamMap,
       hasGroup = false, evalRDDMap)

@@ -19,9 +19,10 @@ package org.apache.spark
 import java.net.URL
 
 import org.apache.commons.logging.LogFactory
-
 import org.apache.spark.scheduler._
 import org.codehaus.jackson.map.ObjectMapper
+import org.spark_project.dmg.pmml.False
+
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -93,10 +94,11 @@ class SparkParallelismTracker(
    *  - During the execution, throws an exception if there is any executor lost.
    *
    * @param body A blocking function call
+   * @param cache if enable rabit cache
    * @tparam T Return type
    * @return The return of body
    */
-  def execute[T](body: => T): T = {
+  def execute[T](body: => T, cache: Boolean = false): T = {
     if (timeout <= 0) {
       logger.info("starting training without setting timeout for waiting for resources")
       body
@@ -109,7 +111,13 @@ class SparkParallelismTracker(
           throw new IllegalStateException(s"Unable to get $requestedCores workers for" +
             s" XGBoost training")
       }
-      safeExecute(body)
+      // add stopper listener if user disable cache
+      if (!cache) {
+        safeExecute(body)
+      } else {
+        logger.info(s"rabit cache has been enabled");
+        body
+      }
     }
   }
 }

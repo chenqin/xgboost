@@ -204,11 +204,7 @@ void CLITrain(const CLIParam& param) {
     if (version % 2 == 0) {
       LOG(INFO) << "boosting round " << i << ", " << elapsed << " sec elapsed";
       learner->UpdateOneIter(i, dtrain.get());
-      if (learner->AllowLazyCheckPoint()) {
-        rabit::LazyCheckPoint(learner.get());
-      } else {
-        rabit::CheckPoint(learner.get());
-      }
+      rabit::CheckPoint(learner.get());
       version += 1;
     }
     CHECK_EQ(version, rabit::VersionNumber());
@@ -231,12 +227,7 @@ void CLITrain(const CLIParam& param) {
           dmlc::Stream::Create(os.str().c_str(), "w"));
       learner->Save(fo.get());
     }
-
-    if (learner->AllowLazyCheckPoint()) {
-      rabit::LazyCheckPoint(learner.get());
-    } else {
-      rabit::CheckPoint(learner.get());
-    }
+    rabit::CheckPoint(learner.get());
     version += 1;
     CHECK_EQ(version, rabit::VersionNumber());
   }

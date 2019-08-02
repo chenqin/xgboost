@@ -388,6 +388,8 @@ class LearnerImpl : public Learner {
             kv.second = "cpu_predictor";
           }
 #endif  // XGBOOST_USE_CUDA
+          if (saved_param == "max_depth") cfg_["max_depth"] = kv.second;
+
         }
       }
       attributes_ =
@@ -412,6 +414,13 @@ class LearnerImpl : public Learner {
     for (auto& p_metric : metrics_) {
       p_metric->Configure(cfg_.begin(), cfg_.end());
     }
+    // TODO: add model format check, not compatible with 0.82 non rabit_cache
+    CHECK_EQ(fi->Read(&tparam_.tree_method, sizeof(tparam_.tree_method)),
+             sizeof(tparam_.tree_method)) << "BoostLearner: wrong train tree method format";
+    CHECK_EQ(fi->Read(&tparam_.dsplit, sizeof(tparam_.dsplit)), sizeof(tparam_.dsplit))
+      << "BoostLearner: wrong train split modle format";
+    CHECK_EQ(fi->Read(&tparam_.disable_default_eval_metric, sizeof(int)), sizeof(tparam_.disable_default_eval_metric))
+      << "BoostLearner: wrong disable default eval metric flag";
   }
 
   // rabit save model to rabit checkpoint
@@ -431,7 +440,7 @@ class LearnerImpl : public Learner {
     {
       // Write `predictor`, `n_gpus`, `gpu_id` parameters as extra attributes
       for (const auto& key : std::vector<std::string>{
-                                   "predictor", "n_gpus", "gpu_id"}) {
+                                   "predictor", "n_gpus", "gpu_id", "max_depth"}) {
         auto it = cfg_.find(key);
         if (it != cfg_.end()) {
           mparam.contain_extra_attrs = 1;
@@ -470,6 +479,10 @@ class LearnerImpl : public Learner {
       }
       fo->Write(metr);
     }
+    //TODO: handle model format compatbility issue with non cache .82 model
+    fo->Write(&tparam_.tree_method, sizeof(TreeMethod));
+    fo->Write(&tparam_.dsplit, sizeof(DataSplitMode));
+    fo->Write(&tparam_.disable_default_eval_metric, sizeof(int));
   }
 
   void UpdateOneIter(int iter, DMatrix* train) override {
@@ -606,7 +619,8 @@ class LearnerImpl : public Learner {
       return;
     }
 
-    const TreeMethod current_tree_method = tparam_.tree_method;
+    const TreeMethod current_tree_method =
+      (&tparam_.tree_method != nullptr) ? tparam_.tree_method : TreeMethod::kAuto;
 
     if (rabit::IsDistributed()) {
       CHECK(tparam_.dsplit != DataSplitMode::kAuto)
@@ -690,7 +704,7 @@ class LearnerImpl : public Learner {
     }
 
     /* If tree_method was changed, re-configure updaters and gradient boosters */
-    if (tparam_.tree_method != current_tree_method) {
+    if (tparam_.tree_method != current_tree_method || current_tree_method != TreeMethod::kAuto) {
       ConfigureUpdaters();
       if (gbm_ != nullptr) {
         gbm_->Configure(cfg_.begin(), cfg_.end());

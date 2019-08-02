@@ -105,7 +105,7 @@ class ColumnSampler {
     std::sort(new_features.begin(), new_features.end());
 
     // ensure that new_features are the same across ranks
-    rabit::Broadcast(&new_features, 0);
+    rabit::Broadcast(&new_features, 0, true);
 
     return p_new_features;
   }
@@ -130,7 +130,6 @@ class ColumnSampler {
       feature_set_tree_ = std::make_shared<std::vector<int>>();
     }
     Reset();
-
     int begin_idx = skip_index_0 ? 1 : 0;
     feature_set_tree_->resize(num_col - begin_idx);
     std::iota(feature_set_tree_->begin(), feature_set_tree_->end(), begin_idx);
