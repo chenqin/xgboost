@@ -404,7 +404,7 @@ object XGBoost extends Serializable {
           sparkJobThread.setUncaughtExceptionHandler(tracker)
           sparkJobThread.start()
           val trackerReturnVal = parallelismTracker.execute(tracker.waitFor(0L),
-            rabitEnv.getOrDefault("rabit_cache", "false").toBoolean)
+            rabitEnv.getOrDefault("rabit_cache", "0").toInt)
           logger.info(s"Rabit returns with exit code $trackerReturnVal")
           val (booster, metrics) = postTrackerReturnProcessing(trackerReturnVal, boostersAndMetrics,
             sparkJobThread)

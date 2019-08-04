@@ -98,7 +98,7 @@ class SparkParallelismTracker(
    * @tparam T Return type
    * @return The return of body
    */
-  def execute[T](body: => T, cache: Boolean = false): T = {
+  def execute[T](body: => T, cache: Int = 0): T = {
     if (timeout <= 0) {
       logger.info("starting training without setting timeout for waiting for resources")
       body
@@ -112,7 +112,7 @@ class SparkParallelismTracker(
             s" XGBoost training")
       }
       // add stopper listener if user disable cache
-      if (!cache) {
+      if (0 == cache) {
         safeExecute(body)
       } else {
         logger.info(s"rabit cache has been enabled");
