@@ -388,6 +388,7 @@ object XGBoost extends Serializable {
           for ((k, v) <- params) {
             if (k.startsWith("rabit_")) rabitEnv.put(k, v.asInstanceOf[String])
           }
+          rabitEnv.put("DMLC_WORKER_STOP_PROCESS_ON_ERROR", "false");
           val boostersAndMetrics = if (hasGroup) {
             trainForRanking(trainingData, overriddenParams, rabitEnv, checkpointRound,
               prevBooster, evalSetsMap)
