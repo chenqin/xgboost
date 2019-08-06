@@ -190,7 +190,12 @@ class XGBoostRegressor (
         XGBLabeledPoint(label, indices, values, weight, group, baseMargin)
     }
     transformSchema(dataset.schema, logging = true)
-    val derivedXGBParamMap = MLlib2XGBoostParams
+    var derivedXGBParamMap = MLlib2XGBoostParams
+    for ( (k, v) <- xgboostParams) {
+      if (k.startsWith("rabit_")) {
+        derivedXGBParamMap = derivedXGBParamMap + (k -> v.asInstanceOf[String])
+      }
+    }
     // All non-null param maps in XGBoostRegressor are in derivedXGBParamMap.
     val (_booster, _metrics) = XGBoost.trainDistributed(instances, derivedXGBParamMap,
       $(numRound), $(numWorkers), $(customObj), $(customEval), $(useExternalMemory),

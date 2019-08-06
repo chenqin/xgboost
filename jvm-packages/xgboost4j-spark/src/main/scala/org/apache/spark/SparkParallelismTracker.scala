@@ -93,10 +93,11 @@ class SparkParallelismTracker(
    *  - During the execution, throws an exception if there is any executor lost.
    *
    * @param body A blocking function call
+   * @param cache if enable rabit cache
    * @tparam T Return type
    * @return The return of body
    */
-  def execute[T](body: => T): T = {
+  def execute[T](body: => T, cache: Int = 0): T = {
     if (timeout <= 0) {
       body
     } else {
@@ -107,7 +108,11 @@ class SparkParallelismTracker(
           throw new IllegalStateException(s"Unable to get $requestedCores workers for" +
             s" XGBoost training")
       }
-      safeExecute(body)
+      if(cache == 0) {
+        safeExecute(body)
+      } else {
+        body
+      }
     }
   }
 }

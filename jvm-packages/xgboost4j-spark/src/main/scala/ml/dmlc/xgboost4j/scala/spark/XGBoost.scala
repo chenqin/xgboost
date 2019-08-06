@@ -259,6 +259,13 @@ object XGBoost extends Serializable {
           val overriddenParams = overrideParamsAccordingToTaskCPUs(params, sc)
           val parallelismTracker = new SparkParallelismTracker(sc, timeoutRequestWorkers, nWorkers)
           val rabitEnv = tracker.getWorkerEnvs
+
+          // CHEN QIN, overwrite rabit env, read rabit_cache and debug setting
+          for ((k, v) <- params) {
+            if (k.startsWith("rabit_")) rabitEnv.put(k, v.asInstanceOf[String])
+          }
+          rabitEnv.put("DMLC_WORKER_STOP_PROCESS_ON_ERROR", "false");
+
           val boostersAndMetrics = hasGroup match {
             case true => {
               val partitionedData = repartitionForTrainingGroup(trainingData, nWorkers)
@@ -289,7 +296,8 @@ object XGBoost extends Serializable {
           }
           sparkJobThread.setUncaughtExceptionHandler(tracker)
           sparkJobThread.start()
-          val trackerReturnVal = parallelismTracker.execute(tracker.waitFor(0L))
+          val trackerReturnVal = parallelismTracker.execute(tracker.waitFor(0L),
+            rabitEnv.getOrDefault("rabit_cache", "0").toInt)
           logger.info(s"Rabit returns with exit code $trackerReturnVal")
           val (booster, metrics) = postTrackerReturnProcessing(trackerReturnVal, boostersAndMetrics,
             sparkJobThread)
