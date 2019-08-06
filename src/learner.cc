@@ -429,7 +429,7 @@ class LearnerImpl : public Learner {
     {
       // Write `predictor`, `n_gpus`, `gpu_id` parameters as extra attributes
       for (const auto& key : std::vector<std::string>{
-                                   "predictor", "n_gpus", "gpu_id"}) {
+                                   "predictor", "n_gpus", "gpu_id", "max_depth"}) {
         auto it = cfg_.find(key);
         if (it != cfg_.end()) {
           mparam.contain_extra_attrs = 1;
