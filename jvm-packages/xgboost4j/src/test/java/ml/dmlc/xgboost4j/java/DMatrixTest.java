@@ -376,4 +376,14 @@ public class DMatrixTest {
     //check
     TestCase.assertTrue(Arrays.equals(new int[]{0, 5, 10}, dmat0.getGroup()));
   }
+
+  @Test
+  public void testGetRabitParameter() throws XGBoostError {
+    Map<String, String> rabitEnv = new HashMap<>();
+    rabitEnv.put("DMLC_TASK_ID", "0");
+    rabitEnv.put("rabit_debug", "1");
+    Rabit.init(rabitEnv);
+    String result = Rabit.getParameter("rabit_debug");
+    TestCase.assertTrue(result == "1");
+  }
 }

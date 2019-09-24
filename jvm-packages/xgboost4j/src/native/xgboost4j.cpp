@@ -868,6 +868,7 @@ JNIEXPORT jint JNICALL Java_ml_dmlc_xgboost4j_java_XGBoostJNI_RabitGetParameter
            jenv->FindClass("java/lang/String"),
            jenv->NewStringUTF(""));
   RabitGetParameter(key.c_str(), buf, &size, MAX_SIZE);
+  printf();
   jenv->SetObjectArrayElement(jvalue,0,jenv->NewStringUTF(buf));
   return 0;
 }

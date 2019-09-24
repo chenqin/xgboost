@@ -208,7 +208,7 @@ class XGBoostClassificationModel private[ml](
     override val numClasses: Int,
     private[spark] val _booster: Booster)
   extends ProbabilisticClassificationModel[Vector, XGBoostClassificationModel]
-    with XGBoostClassifierParams with InferenceParams
+    with XGBoostClassifierParams with InferenceParams with RabitParams
     with MLWritable with Serializable {
 
   import XGBoostClassificationModel._

@@ -19,6 +19,7 @@ package ml.dmlc.xgboost4j.scala.spark
 import ml.dmlc.xgboost4j.scala.{Booster, DMatrix}
 import org.apache.spark.sql._
 import org.scalatest.FunSuite
+import  ml.dmlc.xgboost4j.java.Rabit;
 
 class XGBoostConfigureSuite extends FunSuite with PerTest {
 

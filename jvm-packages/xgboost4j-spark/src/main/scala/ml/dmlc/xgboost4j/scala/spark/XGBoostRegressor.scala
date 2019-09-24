@@ -204,7 +204,7 @@ class XGBoostRegressionModel private[ml] (
     override val uid: String,
     private[spark] val _booster: Booster)
   extends PredictionModel[Vector, XGBoostRegressionModel]
-    with XGBoostRegressorParams with InferenceParams
+    with XGBoostRegressorParams with InferenceParams with RabitParams
     with MLWritable with Serializable {
 
   import XGBoostRegressionModel._

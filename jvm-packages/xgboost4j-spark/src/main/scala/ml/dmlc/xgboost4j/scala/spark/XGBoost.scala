@@ -27,6 +27,7 @@ import ml.dmlc.xgboost4j.scala.rabit.RabitTracker
 import ml.dmlc.xgboost4j.scala.spark.CheckpointManager.CheckpointParam
 import ml.dmlc.xgboost4j.scala.spark.XGBoost.logger
 import ml.dmlc.xgboost4j.scala.spark.params.LearningTaskParams
+import ml.dmlc.xgboost4j.scala.spark.params.RabitParams
 import ml.dmlc.xgboost4j.scala.{XGBoost => SXGBoost, _}
 import ml.dmlc.xgboost4j.{LabeledPoint => XGBLabeledPoint}
 import org.apache.commons.io.FileUtils
@@ -74,6 +75,7 @@ private[this] case class XGBoostExecutionParams(
     checkpointParam: CheckpointParam,
     xgbInputParams: XGBoostExecutionInputParams,
     earlyStoppingParams: XGBoostExecutionEarlyStoppingParams,
+    rabitParams: RabitParams,
     cacheTrainingSet: Boolean) {
 
   private var rawParamMap: Map[String, Any] = _

@@ -86,11 +86,14 @@ public class Rabit {
   /**
    * Print the parameter value of rabit worker
    * @param key of parameter
-   * @param out_values value of parameter
+   * @return  out_values value of parameter
    * @throws XGBoostError
    */
-  public static void getParameter(String key, String[] out_values) throws XGBoostError {
+  public static String getParameter(String key) throws XGBoostError {
+    String[] out_values = new String[1];
+    out_values[0] = "";
     checkCall(XGBoostJNI.RabitGetParameter(key, out_values));
+    return out_values[0];
   }
 
 
