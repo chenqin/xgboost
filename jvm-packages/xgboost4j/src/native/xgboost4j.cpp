@@ -853,6 +853,27 @@ JNIEXPORT jint JNICALL Java_ml_dmlc_xgboost4j_java_XGBoostJNI_RabitTrackerPrint
 
 /*
  * Class:     ml_dmlc_xgboost4j_java_XGBoostJNI
+ * Method:    RabitGetParameter
+ * Signature: (Ljava/lang/String[Ljava/lang/String)I
+ */
+JNIEXPORT jint JNICALL Java_ml_dmlc_xgboost4j_java_XGBoostJNI_RabitGetParameter
+  (JNIEnv *jenv, jclass jcls, jstring jkey, jobjectArray jvalue) {
+  std::string key(jenv->GetStringUTFChars(jkey, 0),
+                    jenv->GetStringLength(jkey));
+
+  const rbt_ulong MAX_SIZE = 500;
+  char buf[MAX_SIZE];
+  rbt_ulong size;
+  jvalue = (jobjectArray)jenv->NewObjectArray(1,
+           jenv->FindClass("java/lang/String"),
+           jenv->NewStringUTF(""));
+  RabitGetParameter(key.c_str(), buf, &size, MAX_SIZE);
+  jenv->SetObjectArrayElement(jvalue,0,jenv->NewStringUTF(buf));
+  return 0;
+}
+
+/*
+ * Class:     ml_dmlc_xgboost4j_java_XGBoostJNI
  * Method:    RabitGetRank
  * Signature: ([I)I
  */

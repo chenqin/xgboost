@@ -297,6 +297,14 @@ JNIEXPORT jint JNICALL Java_ml_dmlc_xgboost4j_java_XGBoostJNI_RabitTrackerPrint
 
 /*
  * Class:     ml_dmlc_xgboost4j_java_XGBoostJNI
+ * Method:    RabitGetParameter
+ * Signature: (Ljava/lang/String[Ljava/lang/String)I
+ */
+JNIEXPORT jint JNICALL Java_ml_dmlc_xgboost4j_java_XGBoostJNI_RabitGetParameter
+  (JNIEnv *, jclass, jstring, jobjectArray);
+
+/*
+ * Class:     ml_dmlc_xgboost4j_java_XGBoostJNI
  * Method:    RabitGetRank
  * Signature: ([I)I
  */

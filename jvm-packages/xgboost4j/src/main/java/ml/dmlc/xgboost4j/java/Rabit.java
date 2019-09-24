@@ -84,6 +84,17 @@ public class Rabit {
   }
 
   /**
+   * Print the parameter value of rabit worker
+   * @param key of parameter
+   * @param out_values value of parameter
+   * @throws XGBoostError
+   */
+  public static void getParameter(String key, String[] out_values) throws XGBoostError {
+    checkCall(XGBoostJNI.RabitGetParameter(key, out_values));
+  }
+
+
+  /**
    * Get version number of current stored model in the thread.
    * which means how many calls to CheckPoint we made so far.
    * @return version Number.
