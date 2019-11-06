@@ -84,6 +84,20 @@
 #define XGBOOST_DEVICE
 #endif  // defined (__CUDA__) || defined(__NVCC__)
 
+// These check are for Makefile.
+#if !defined(XGBOOST_MM_PREFETCH_PRESENT) && !defined(XGBOOST_BUILTIN_PREFETCH_PRESENT)
+/* default logic for software pre-fetching */
+#if (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_AMD64))) || defined(__INTEL_COMPILER)
+// Enable _mm_prefetch for Intel compiler and MSVC+x86
+  #define XGBOOST_MM_PREFETCH_PRESENT
+  #define XGBOOST_BUILTIN_PREFETCH_PRESENT
+#elif defined(__GNUC__)
+// Enable __builtin_prefetch for GCC
+#define XGBOOST_BUILTIN_PREFETCH_PRESENT
+#endif  // GUARDS
+
+#endif  // !defined(XGBOOST_MM_PREFETCH_PRESENT) && !defined()
+
 /*! \brief namespace of xgboost*/
 namespace xgboost {
 /*!
@@ -211,12 +225,14 @@ using GradientPairInteger = detail::GradientPairInternal<int64_t>;
 using Args = std::vector<std::pair<std::string, std::string> >;
 
 /*! \brief small eps gap for minimum split decision. */
-const bst_float kRtEps = 1e-6f;
+constexpr bst_float kRtEps = 1e-6f;
 
 /*! \brief define unsigned long for openmp loop */
 using omp_ulong = dmlc::omp_ulong;  // NOLINT
 /*! \brief define unsigned int for openmp loop */
 using bst_omp_uint = dmlc::omp_uint;  // NOLINT
+/*! \brief Type used for representing version number in binary form.*/
+using XGBoostVersionT = int32_t;
 
 /*!
  * \brief define compatible keywords in g++
@@ -229,8 +245,5 @@ using bst_omp_uint = dmlc::omp_uint;  // NOLINT
 #endif  // __GNUC__ == 4 && __GNUC_MINOR__ < 8
 #endif  // DMLC_USE_CXX11 && defined(__GNUC__) && !defined(__clang_version__)
 }  // namespace xgboost
-
-/* Always keep this #include at the bottom of xgboost/base.h */
-#include <xgboost/build_config.h>
 
 #endif  // XGBOOST_BASE_H_

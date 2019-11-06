@@ -1,10 +1,4 @@
 // Copyright (c) 2014-2019 by Contributors
-
-#include <xgboost/data.h>
-#include <xgboost/learner.h>
-#include <xgboost/c_api.h>
-#include <xgboost/logging.h>
-
 #include <dmlc/thread_local.h>
 #include <rabit/rabit.h>
 #include <rabit/c_api.h>
@@ -15,6 +9,12 @@
 #include <vector>
 #include <string>
 #include <memory>
+
+#include "xgboost/data.h"
+#include "xgboost/learner.h"
+#include "xgboost/c_api.h"
+#include "xgboost/logging.h"
+#include "xgboost/version_config.h"
 
 #include "c_api_error.h"
 #include "../data/simple_csr_source.h"
@@ -148,6 +148,18 @@ struct XGBAPIThreadLocalEntry {
   /*! \brief temp variable of gradient pairs. */
   std::vector<GradientPair> tmp_gpair;
 };
+
+XGB_DLL void XGBoostVersion(int* major, int* minor, int* patch) {
+  if (major) {
+    *major = XGBOOST_VER_MAJOR;
+  }
+  if (minor) {
+    *minor = XGBOOST_VER_MINOR;
+  }
+  if (patch) {
+    *patch = XGBOOST_VER_PATCH;
+  }
+}
 
 // define the threadlocal store.
 using XGBAPIThreadLocalStore = dmlc::ThreadLocalStore<XGBAPIThreadLocalEntry>;

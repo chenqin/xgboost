@@ -1,5 +1,6 @@
-// Copyright by Contributors
+// Copyright (c) 2019 by Contributors
 #include <gtest/gtest.h>
+#include <xgboost/version_config.h>
 #include <xgboost/c_api.h>
 #include <xgboost/data.h>
 
@@ -62,4 +63,10 @@ TEST(c_api, XGDMatrixCreateFromMat_omp) {
     }
     delete dmat;
   }
+}
+
+TEST(c_api, Version) {
+  int patch {0};
+  XGBoostVersion(NULL, NULL, &patch);  // NOLINT
+  ASSERT_EQ(patch, XGBOOST_VER_PATCH);
 }
